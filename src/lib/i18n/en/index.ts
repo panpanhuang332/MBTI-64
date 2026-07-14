@@ -249,6 +249,8 @@ export const enBundle: Bundle = {
     comparePlaceholder: "e.g. ENFP-AH, or paste their result link",
     compareSubmit: "Compare",
     compareError: "Invalid code format — e.g. ENFP-AH",
+    print: "Print / Save as PDF",
+    printedFrom: "This report was printed from",
     copyLink: "Copy Share Link",
     copied: "Link copied ✓",
     copyPrompt: "Copy this link manually:",

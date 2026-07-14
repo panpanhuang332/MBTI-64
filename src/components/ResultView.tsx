@@ -168,6 +168,13 @@ export function ResultView({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+      {/* 列印時的來源資訊 */}
+      <p className="print-only mb-4 text-xs text-mist">
+        {t.site.name}
+        {t.site.nameEn !== t.site.name ? ` ${t.site.nameEn}` : ""} ·{" "}
+        {t.result.printedFrom} {typeof window !== "undefined" ? window.location.origin : ""}
+        ・{t.shareCard.disclaimer}
+      </p>
       {/* 標頭 */}
       <header className="text-center" data-testid="result-header">
         <p className="text-sm font-semibold tracking-widest text-ink-soft">
@@ -222,7 +229,7 @@ export function ResultView({
       </section>
 
       {/* 穩定度 */}
-      <section className="mt-8 rounded-card border border-ice-deep/60 p-5">
+      <section className="print-avoid-break mt-8 rounded-card border border-ice-deep/60 p-5">
         <h2 className="font-bold text-ink-deep">
           {fmt(t.result.stabilityTitle, {
             label: t.dimensionBars.stability[stability],
@@ -306,7 +313,7 @@ export function ResultView({
       </section>
 
       {/* 與朋友類型對照 */}
-      <section className="mt-8 rounded-card border border-ice-deep/60 bg-cloud p-6">
+      <section className="no-print mt-8 rounded-card border border-ice-deep/60 bg-cloud p-6">
         <h2 className="font-bold text-ink-deep">{t.result.compareTitle}</h2>
         <p className="mt-2 text-sm leading-relaxed text-mist">
           {t.result.compareBody}
@@ -366,7 +373,7 @@ export function ResultView({
       </section>
 
       {/* 動作 */}
-      <section className="mt-10 grid gap-3 sm:grid-cols-2">
+      <section className="no-print mt-10 grid gap-3 sm:grid-cols-2">
         <button
           type="button"
           onClick={copyLink}
@@ -404,8 +411,15 @@ export function ResultView({
         </Link>
         <button
           type="button"
+          onClick={() => window.print()}
+          className="min-h-12 rounded-full border-2 border-ice-deep px-6 py-3 font-semibold text-ink transition hover:border-ink-soft"
+        >
+          {t.result.print}
+        </button>
+        <button
+          type="button"
           onClick={retake}
-          className="min-h-12 rounded-full border-2 border-ice-deep px-6 py-3 font-semibold text-ink transition hover:border-ink-soft sm:col-span-2"
+          className="min-h-12 rounded-full border-2 border-ice-deep px-6 py-3 font-semibold text-ink transition hover:border-ink-soft"
         >
           {t.result.retake}
         </button>
@@ -426,7 +440,7 @@ function DetailBlock({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-card border border-ice-deep/60 p-5">
+    <div className="print-avoid-break rounded-card border border-ice-deep/60 p-5">
       <h2 className="font-bold text-ink-deep">{title}</h2>
       <div className="mt-2 text-sm leading-relaxed text-ink-soft">
         {children}

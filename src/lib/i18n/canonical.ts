@@ -245,6 +245,8 @@ export const canonicalBundle = {
     comparePlaceholder: "如 ENFP-AH，或貼上對方的結果連結",
     compareSubmit: "開始對照",
     compareError: "代碼格式不正確，例：ENFP-AH",
+    print: "列印／存成 PDF",
+    printedFrom: "本報告列印自",
     copyLink: "複製分享連結",
     copied: "已複製連結 ✓",
     copyPrompt: "請手動複製這段連結：",

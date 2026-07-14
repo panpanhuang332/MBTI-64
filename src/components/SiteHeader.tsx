@@ -20,7 +20,7 @@ export function SiteHeader({
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ice-deep/60 bg-white/90 backdrop-blur">
+    <header className="no-print sticky top-0 z-40 border-b border-ice-deep/60 bg-white/90 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-2 px-4">
         <Link
           href={localeHref(locale, "/")}

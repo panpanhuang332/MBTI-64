@@ -59,6 +59,33 @@ body {
   }
 }
 
+/* 列印／存成 PDF：只保留報告內容本身 */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: white;
+  }
+  main {
+    max-width: none;
+  }
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
 @keyframes pa64-rise {
   from {
     opacity: 0;

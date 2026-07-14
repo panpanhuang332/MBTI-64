@@ -239,6 +239,8 @@
   "comparePlaceholder": "如 ENFP-AH，或粘贴对方的结果链接",
   "compareSubmit": "开始对照",
   "compareError": "代码格式不正确，例：ENFP-AH",
+  "print": "打印／存成 PDF",
+  "printedFrom": "本报告打印自",
   "copyLink": "拷贝分享链接",
   "copied": "已拷贝链接 ✓",
   "copyPrompt": "请手动拷贝这段链接：",
