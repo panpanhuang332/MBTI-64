@@ -5,6 +5,9 @@
 /.next/
 /out/
 
+# 由 npm run generate-og 於 build 時產生
+/public/og/
+
 # testing
 /coverage
 /test-results/

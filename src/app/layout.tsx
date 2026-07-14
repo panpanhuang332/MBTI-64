@@ -32,11 +32,13 @@ export const metadata: Metadata = {
     title: `${SITE_NAME}｜${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
+    images: [{ url: "/og/default.png", width: 1200, height: 630 }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: `${SITE_NAME}｜${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
+    images: ["/og/default.png"],
   },
   robots: { index: true, follow: true },
 };

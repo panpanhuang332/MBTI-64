@@ -16,6 +16,7 @@
 - **分享**：經驗證的 URL query 參數（防竄改、防崩潰）＋ Canvas 分享圖卡（1080×1350、1080×1080）
 - **64 型圖鑑**：搜尋（代碼／中文名）、篩選（核心型／A-O／H-C），無稀有度階級
 - **SEO**：title template、OG／Twitter meta、robots.txt、sitemap.xml、manifest、favicon
+- **每型專屬 OG 圖**：build 時以 `@resvg/resvg-js` 將原創 SVG 轉成 1200×630 PNG（64 型＋預設圖，共 65 張），社群分享每型都有自己的預覽圖
 
 ## 六個維度
 
@@ -92,7 +93,15 @@ PW_CHROMIUM_PATH=/path/to/chromium npm run test:e2e
 ## 建置
 
 ```bash
-npm run build      # 會先自動執行 npm run validate-data
+npm run build      # prebuild 會自動執行資料驗證 + OG 圖生成
+```
+
+### OG 圖與字型
+
+`npm run generate-og` 會把 `src/lib/og-image.ts` 的 SVG 轉成 `public/og/*.png`（已 gitignore，build 時重新生成）。算圖字型是 `assets/fonts/` 內的 Noto Sans TC **子集**（SIL OFL 1.1，約 76KB，只在 build 時使用、不會送到瀏覽器）。若修改了站名、類型名稱或代表語出現新字元，generate-og 會直接讓 build 失敗並提示執行：
+
+```bash
+bash scripts/subset-og-font.sh   # 需要 python3 + fonttools（pip install fonttools）
 ```
 
 輸出為純靜態網站（`out/`），共 81 頁（含 64 個類型詳情頁）。本機預覽：

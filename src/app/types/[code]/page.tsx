@@ -20,10 +20,20 @@ export async function generateMetadata({
   const { code } = await params;
   const profile = getFullProfile(code);
   if (!profile) return { title: "找不到類型" };
+  const ogImage = `/og/${profile.code}.png`;
   return {
     title: `${profile.code} ${profile.name}`,
     description: `${profile.name}（${profile.code}）：${profile.core.summary.slice(0, 80)}…`,
     alternates: { canonical: `/types/${profile.code}` },
+    openGraph: {
+      title: `${profile.code} ${profile.name}｜人格座標 64`,
+      description: `${profile.subtitle}・「${profile.motto}」`,
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [ogImage],
+    },
   };
 }
 
