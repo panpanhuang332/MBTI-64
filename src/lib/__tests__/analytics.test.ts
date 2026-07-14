@@ -48,7 +48,12 @@ describe("匿名統計", () => {
     expect(track("test_completed", "en")).toBe(true);
     expect(beaconCalls.length).toBe(1);
     expect(beaconCalls[0].url).toBe("https://stats.example.com/e");
-    const json = JSON.parse(await new Response(beaconCalls[0].body).text());
+    const text = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.readAsText(beaconCalls[0].body);
+    });
+    const json = JSON.parse(text);
     expect(json).toEqual({ event: "test_completed", locale: "en", v: 1 });
   });
 
