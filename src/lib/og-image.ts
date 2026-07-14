@@ -140,7 +140,9 @@ export function collectOgChars(datas: OgData[], locale: Locale): string {
   add(t.site.tagline);
   add(t.shareCard.ogMotto);
   add("「」“”64");
-  add("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.·・|｜ ");
+  add(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.·・|｜/_~:# "
+  );
   for (const d of datas) {
     add(d.code);
     add(d.name);

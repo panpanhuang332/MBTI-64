@@ -8,7 +8,8 @@ export function ServiceWorkerRegistrar() {
     if (process.env.NODE_ENV !== "production") return;
     if (!("serviceWorker" in navigator)) return;
     const register = () => {
-      navigator.serviceWorker.register("/sw.js").catch(() => {
+      const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+      navigator.serviceWorker.register(`${base}/sw.js`).catch(() => {
         // 註冊失敗（如私密模式）時靜默：網站功能不受影響
       });
     };

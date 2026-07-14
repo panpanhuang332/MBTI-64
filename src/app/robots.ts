@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/site";
+import { BASE_PATH, SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";
 
@@ -21,7 +21,7 @@ export default function robots(): MetadataRoute.Robots {
         "/en/test/calculating",
         "/en/result",
         "/en/review",
-      ],
+      ].map((p) => `${BASE_PATH}${p}`),
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

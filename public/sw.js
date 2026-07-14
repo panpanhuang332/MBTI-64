@@ -8,8 +8,11 @@
  *
  * 改版：調整 CACHE_VERSION 會在 activate 時清掉舊快取。
  */
-const CACHE_VERSION = "pa64-v1";
+const CACHE_VERSION = "pa64-v2";
 const CACHE_NAME = `${CACHE_VERSION}-runtime`;
+
+/** 子路徑部署（如 GitHub Pages 專案頁）時由註冊 scope 推導前綴 */
+const BASE = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 
 /** 安裝時預快取的核心頁面（其餘頁面於瀏覽時寫入） */
 const PRECACHE_URLS = [
@@ -23,7 +26,7 @@ const PRECACHE_URLS = [
   "/review",
   "/icon.svg",
   "/manifest.webmanifest",
-];
+].map((path) => `${BASE}${path}`);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -53,9 +56,9 @@ self.addEventListener("activate", (event) => {
 
 function isStaticAsset(url) {
   return (
-    url.pathname.startsWith("/_next/static/") ||
-    url.pathname.startsWith("/og/") ||
-    url.pathname === "/icon.svg" ||
+    url.pathname.startsWith(`${BASE}/_next/static/`) ||
+    url.pathname.startsWith(`${BASE}/og/`) ||
+    url.pathname === `${BASE}/icon.svg` ||
     url.pathname === "/favicon.ico"
   );
 }
@@ -83,7 +86,7 @@ async function networkFirst(request) {
     const cached = await caches.match(request);
     if (cached) return cached;
     // 離線且沒快取過這一頁：退回首頁殼（client-side 路由仍可運作）
-    const shell = await caches.match("/");
+    const shell = await caches.match(`${BASE}/`);
     if (shell) return shell;
     return new Response("Offline", {
       status: 503,

@@ -16,6 +16,7 @@ export function pageMetadata(
   extra?: { noindex?: boolean; ogImage?: string }
 ): Metadata {
   const t = getBundle(locale);
+  // metadataBase（SITE_URL 含 basePath）會自動拼接，這裡用站內路徑即可
   const canonical = localeHref(locale, path);
   // 未指定專屬 OG 圖時使用該語系的預設圖
   const ogImage = extra?.ogImage ?? ogDefaultPath(locale);

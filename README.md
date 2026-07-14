@@ -118,6 +118,14 @@ node scripts/serve-out.mjs 4173
 
 ## 部署
 
+### GitHub Pages（目前線上版本）
+
+網站部署於 `https://panpanhuang332.github.io/MBTI-64/`（`gh-pages` 分支）。
+
+- 手動部署：`NEXT_PUBLIC_BASE_PATH=/MBTI-64 NEXT_PUBLIC_SITE_URL=https://panpanhuang332.github.io/MBTI-64 npm run build`，把 `out/` 推到 `gh-pages` 分支
+- 自動部署：`.github/workflows/deploy-pages.yml` 會在 push 到 `main` 時 build 並發佈（merge 到 main 後生效）
+- 之後換自訂網域：Pages 設定 custom domain ＋ 把兩個環境變數改為新網域（不再需要 `NEXT_PUBLIC_BASE_PATH`），重新 build 即可
+
 ### Vercel
 
 1. 將 repo 匯入 Vercel，框架選 Next.js（零設定即可）。
