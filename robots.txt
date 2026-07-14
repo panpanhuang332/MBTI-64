@@ -1,0 +1,16 @@
+User-Agent: *
+Allow: /
+Disallow: /MBTI-64/test/questions
+Disallow: /MBTI-64/test/calculating
+Disallow: /MBTI-64/result
+Disallow: /MBTI-64/review
+Disallow: /MBTI-64/zh-CN/test/questions
+Disallow: /MBTI-64/zh-CN/test/calculating
+Disallow: /MBTI-64/zh-CN/result
+Disallow: /MBTI-64/zh-CN/review
+Disallow: /MBTI-64/en/test/questions
+Disallow: /MBTI-64/en/test/calculating
+Disallow: /MBTI-64/en/result
+Disallow: /MBTI-64/en/review
+
+Sitemap: https://panpanhuang332.github.io/MBTI-64/sitemap.xml
