@@ -20,6 +20,7 @@ const PRECACHE_URLS = [
   "/result",
   "/types",
   "/compare",
+  "/review",
   "/icon.svg",
   "/manifest.webmanifest",
 ];

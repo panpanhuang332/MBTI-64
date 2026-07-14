@@ -46,6 +46,9 @@
   "terms": {
    "title": "使用条款",
    "description": "人格坐标 64 的使用条款与免责声明。"
+  },
+  "review": {
+   "title": "作答复盘"
   }
  },
  "header": {
@@ -239,6 +242,7 @@
   "comparePlaceholder": "如 ENFP-AH，或粘贴对方的结果链接",
   "compareSubmit": "开始对照",
   "compareError": "代码格式不正确，例：ENFP-AH",
+  "reviewLink": "回顾我的作答",
   "print": "打印／存成 PDF",
   "printedFrom": "本报告打印自",
   "copyLink": "拷贝分享链接",
@@ -457,6 +461,22 @@
     "list": []
    }
   ]
+ },
+ "review": {
+  "title": "作答复盘",
+  "lead": "回顾你在每一题的选择，以及它把你推向哪一侧。复盘数据只存在你的设备上。",
+  "answeredCount": "已作答 {done} / {total} 题",
+  "completedAtLabel": "完成于 {date}",
+  "emptyTitle": "找不到本机的作答纪录",
+  "emptyBody": "复盘需要读取保存在这个设备上的作答。你可能还没开始测验、已清除纪录，或正在使用不同的设备或浏览器。",
+  "emptyCta": "开始测验",
+  "reverseTag": "反向计分题",
+  "neutralLabel": "中立，不影响此维度",
+  "leanLabel": "推向 {letter}・{name}",
+  "editQuestion": "修改这一题",
+  "editNote": "修改任何一题后，需要回到最后一题按「完成」重新产生结果；在那之前，先前的结果维持不变。",
+  "backToResult": "回到我的结果",
+  "yourAnswer": "你的作答"
  },
  "shareCard": {
   "disclaimer": "仅供自我探索・非官方 MBTI・非心理诊断",

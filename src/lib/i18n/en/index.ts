@@ -53,6 +53,7 @@ export const enBundle: Bundle = {
       title: "Terms of Use",
       description: "Terms of use and disclaimer for Personality Atlas 64.",
     },
+    review: { title: "Answer Review" },
   },
   header: {
     logoAria: "Personality Atlas 64 home",
@@ -249,6 +250,7 @@ export const enBundle: Bundle = {
     comparePlaceholder: "e.g. ENFP-AH, or paste their result link",
     compareSubmit: "Compare",
     compareError: "Invalid code format — e.g. ENFP-AH",
+    reviewLink: "Review my answers",
     print: "Print / Save as PDF",
     printedFrom: "This report was printed from",
     copyLink: "Copy Share Link",
@@ -482,6 +484,24 @@ export const enBundle: Bundle = {
         list: [],
       },
     ],
+  },
+  review: {
+    title: "Answer Review",
+    lead: "Revisit what you chose on every question and which side it leaned you towards. Review data lives only on this device.",
+    answeredCount: "{done} / {total} answered",
+    completedAtLabel: "Completed on {date}",
+    emptyTitle: "No answer record on this device",
+    emptyBody:
+      "Reviewing requires the answers saved on this device. You may not have started the test yet, may have cleared the record, or may be on a different device or browser.",
+    emptyCta: "Take the Test",
+    reverseTag: "Reverse-scored",
+    neutralLabel: "Neutral — doesn't affect this dimension",
+    leanLabel: "Leans {letter} · {name}",
+    editQuestion: "Edit this answer",
+    editNote:
+      "After editing any answer, go back to the last question and press “Finish” to regenerate your result; until then, the previous result stays unchanged.",
+    backToResult: "Back to my result",
+    yourAnswer: "Your answer",
   },
   shareCard: {
     disclaimer: "For self-exploration only · Not official MBTI · Not a diagnosis",

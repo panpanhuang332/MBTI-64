@@ -20,7 +20,7 @@ import {
 import { decodeResultParams, encodeResultParams } from "@/lib/result-url";
 import { track } from "@/lib/analytics";
 import { downloadShareCard } from "@/lib/share-card";
-import { clearSession, loadResult } from "@/lib/storage";
+import { clearSession, loadResult, loadSession } from "@/lib/storage";
 import type { DimensionScores, Stability } from "@/lib/types";
 
 interface ViewData {
@@ -49,8 +49,13 @@ export function ResultView({
   const [copied, setCopied] = useState(false);
   const [friendInput, setFriendInput] = useState("");
   const [friendError, setFriendError] = useState<string | null>(null);
+  const [hasLocalAnswers, setHasLocalAnswers] = useState(false);
 
   useEffect(() => {
+    const localSession = loadSession();
+    setHasLocalAnswers(
+      !!localSession && Object.keys(localSession.answers).length > 0
+    );
     const hasParams = searchParams.size > 0;
     if (hasParams) {
       const shared = decodeResultParams(
@@ -409,6 +414,14 @@ export function ResultView({
         >
           {t.result.viewAll}
         </Link>
+        {hasLocalAnswers && (
+          <Link
+            href={localeHref(locale, "/review")}
+            className="flex min-h-12 items-center justify-center rounded-full border-2 border-ice-deep px-6 py-3 font-semibold text-ink transition hover:border-ink-soft"
+          >
+            {t.result.reviewLink}
+          </Link>
+        )}
         <button
           type="button"
           onClick={() => window.print()}

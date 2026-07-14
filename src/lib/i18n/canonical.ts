@@ -59,6 +59,7 @@ export const canonicalBundle = {
         "人格座標 64 的隱私原則：免帳號、答案只保存在你的瀏覽器、不上傳伺服器、不收集個資。",
     },
     terms: { title: "使用條款", description: "人格座標 64 的使用條款與免責聲明。" },
+    review: { title: "作答復盤" },
   },
   header: {
     logoAria: "人格座標 64 首頁",
@@ -245,6 +246,7 @@ export const canonicalBundle = {
     comparePlaceholder: "如 ENFP-AH，或貼上對方的結果連結",
     compareSubmit: "開始對照",
     compareError: "代碼格式不正確，例：ENFP-AH",
+    reviewLink: "回顧我的作答",
     print: "列印／存成 PDF",
     printedFrom: "本報告列印自",
     copyLink: "複製分享連結",
@@ -467,6 +469,24 @@ export const canonicalBundle = {
         list: [],
       },
     ],
+  },
+  review: {
+    title: "作答復盤",
+    lead: "回顧你在每一題的選擇，以及它把你推向哪一側。復盤資料只存在你的裝置上。",
+    answeredCount: "已作答 {done} / {total} 題",
+    completedAtLabel: "完成於 {date}",
+    emptyTitle: "找不到本機的作答紀錄",
+    emptyBody:
+      "復盤需要讀取保存在這個裝置上的作答。你可能還沒開始測驗、已清除紀錄，或正在使用不同的裝置或瀏覽器。",
+    emptyCta: "開始測驗",
+    reverseTag: "反向計分題",
+    neutralLabel: "中立，不影響此維度",
+    leanLabel: "推向 {letter}・{name}",
+    editQuestion: "修改這一題",
+    editNote:
+      "修改任何一題後，需要回到最後一題按「完成」重新產生結果；在那之前，先前的結果維持不變。",
+    backToResult: "回到我的結果",
+    yourAnswer: "你的作答",
   },
   shareCard: {
     disclaimer: "僅供自我探索・非官方 MBTI・非心理診斷",

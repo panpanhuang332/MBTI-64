@@ -167,6 +167,20 @@ export function computeResult(
   };
 }
 
+/**
+ * 單題作答的傾向方向（復盤視圖用）：
+ * 'first' = 推向維度第一字母、'second' = 推向第二字母、'neutral' = 中立
+ */
+export function answerLean(
+  question: Question,
+  answer: number
+): "first" | "second" | "neutral" {
+  const effective = convertAnswer(answer) * question.direction;
+  if (effective > 0) return "first";
+  if (effective < 0) return "second";
+  return "neutral";
+}
+
 /** 六字母代碼格式驗證，例如 INTJ-OC */
 export const CODE_PATTERN = /^[EI][SN][TF][JP]-[AO][HC]$/;
 
