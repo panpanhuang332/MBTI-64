@@ -1,29 +1,39 @@
-import { DIMENSION_META, DIMENSION_ORDER } from "@/lib/dimensions";
-import { STRENGTH_LABEL, dimensionResult } from "@/lib/scoring";
+import { DIMENSION_ORDER } from "@/lib/dimensions";
+import { dimensionResult } from "@/lib/scoring";
 import type { DimensionScores } from "@/lib/types";
+import { getBundle } from "@/lib/i18n";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 
 /** 六維度百分比橫條圖（百分比代表作答傾向，不是人格純度） */
-export function DimensionBars({ scores }: { scores: DimensionScores }) {
+export function DimensionBars({
+  scores,
+  locale = DEFAULT_LOCALE,
+}: {
+  scores: DimensionScores;
+  locale?: Locale;
+}) {
+  const t = getBundle(locale);
   return (
     <div className="space-y-5">
       {DIMENSION_ORDER.map((d) => {
-        const meta = DIMENSION_META[d];
+        const meta = t.dimensions[d];
         const r = dimensionResult(d, scores[d]);
         const firstActive = r.score >= 0;
+        const strengthLabel = t.dimensionBars.strength[r.strength];
         return (
           <div key={d}>
-            <div className="flex items-baseline justify-between text-sm">
+            <div className="flex items-baseline justify-between gap-2 text-sm">
               <span
                 className={`font-bold ${firstActive ? "text-ink-deep" : "text-mist"}`}
               >
                 {meta.first}・{meta.firstName} {r.firstPercent}%
               </span>
-              <span className="text-xs text-mist">
+              <span className="hidden text-xs text-mist sm:inline">
                 {meta.title}
-                {meta.custom && "＊"}・{STRENGTH_LABEL[r.strength]}
+                {meta.custom && "＊"}・{strengthLabel}
               </span>
               <span
-                className={`font-bold ${!firstActive ? "text-ink-deep" : "text-mist"}`}
+                className={`text-right font-bold ${!firstActive ? "text-ink-deep" : "text-mist"}`}
               >
                 {r.secondPercent}% {meta.second}・{meta.secondName}
               </span>
@@ -31,7 +41,7 @@ export function DimensionBars({ scores }: { scores: DimensionScores }) {
             <div
               className="relative mt-1.5 h-4 overflow-hidden rounded-full bg-ice"
               role="img"
-              aria-label={`${meta.title}：${meta.first} ${r.firstPercent}%，${meta.second} ${r.secondPercent}%，${STRENGTH_LABEL[r.strength]}`}
+              aria-label={`${meta.title}: ${meta.first} ${r.firstPercent}%, ${meta.second} ${r.secondPercent}%, ${strengthLabel}`}
             >
               <div
                 className={`animate-bargrow absolute inset-y-0 rounded-full ${
@@ -46,15 +56,14 @@ export function DimensionBars({ scores }: { scores: DimensionScores }) {
             </div>
             {r.strength === "close" && (
               <p className="mt-1 text-xs text-mist">
-                兩側偏好接近：這個維度上，你可能依情境靈活切換。
+                {t.dimensionBars.closeNote}
               </p>
             )}
           </div>
         );
       })}
       <p className="text-xs leading-relaxed text-mist">
-        ＊AO 與 HC 為本站自訂探索維度，非官方 MBTI
-        構面。百分比代表本次作答的傾向強度，不是人格純度，也不是準確率。
+        {t.dimensionBars.footnote}
       </p>
     </div>
   );

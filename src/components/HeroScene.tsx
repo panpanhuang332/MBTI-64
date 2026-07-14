@@ -2,12 +2,16 @@
  * 首頁原創 SVG 場景：冰藍山景 + 星圖 + 營火旁聚集的抽象人物。
  * 完全以幾何圖形手繪，不使用任何外部圖片素材。
  */
-export function HeroScene() {
+export function HeroScene({
+  ariaLabel = "冰藍色的山景下，一群抽象的旅人圍著營火，天上有星圖與羅盤",
+}: {
+  ariaLabel?: string;
+}) {
   return (
     <svg
       viewBox="0 0 960 420"
       role="img"
-      aria-label="冰藍色的山景下，一群抽象的旅人圍著營火，天上有星圖與羅盤"
+      aria-label={ariaLabel}
       className="h-auto w-full"
     >
       <defs>

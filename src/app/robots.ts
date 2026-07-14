@@ -8,7 +8,17 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/test/questions", "/test/calculating", "/result"],
+      disallow: [
+        "/test/questions",
+        "/test/calculating",
+        "/result",
+        "/zh-CN/test/questions",
+        "/zh-CN/test/calculating",
+        "/zh-CN/result",
+        "/en/test/questions",
+        "/en/test/calculating",
+        "/en/result",
+      ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

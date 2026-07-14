@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TypeEmblem } from "@/components/TypeEmblem";
-import { CORE_PROFILES, getAllProfiles } from "@/lib/profiles";
+import { getAllLocalizedProfiles, getBundle } from "@/lib/i18n";
+import {
+  fmt,
+  localeHref,
+  DEFAULT_LOCALE,
+  type Locale,
+} from "@/lib/i18n/locales";
 
 const CORE_ORDER = [
   "ISTJ",
@@ -25,13 +31,18 @@ const CORE_ORDER = [
 ];
 
 /** 64 型圖鑑：搜尋＋篩選（核心型 / A-O / H-C），卡片式瀏覽，無稀有度階級 */
-export function TypesExplorer() {
+export function TypesExplorer({
+  locale = DEFAULT_LOCALE,
+}: {
+  locale?: Locale;
+}) {
+  const t = getBundle(locale);
   const [query, setQuery] = useState("");
   const [coreFilter, setCoreFilter] = useState<string>("all");
   const [aoFilter, setAoFilter] = useState<string>("all");
   const [hcFilter, setHcFilter] = useState<string>("all");
 
-  const profiles = useMemo(() => getAllProfiles(), []);
+  const profiles = useMemo(() => getAllLocalizedProfiles(locale), [locale]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -42,8 +53,8 @@ export function TypesExplorer() {
       if (!q) return true;
       return (
         p.code.toLowerCase().includes(q) ||
-        p.name.includes(query.trim()) ||
-        p.core.name.includes(query.trim()) ||
+        p.name.toLowerCase().includes(q) ||
+        p.core.name.toLowerCase().includes(q) ||
         p.enName.toLowerCase().includes(q)
       );
     });
@@ -54,14 +65,15 @@ export function TypesExplorer() {
       {/* 控制列 */}
       <div className="rounded-card border border-ice-deep/60 bg-cloud p-4">
         <label htmlFor="type-search" className="sr-only">
-          搜尋代碼或中文名稱
+          {t.types.searchLabel}
         </label>
         <input
           id="type-search"
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="搜尋代碼（如 INTJ-OC）或中文名稱"
+          placeholder={t.types.searchPlaceholder}
+          aria-label={t.types.searchLabel}
           className="min-h-12 w-full rounded-full border-2 border-ice-deep bg-white px-5 text-ink placeholder:text-mist focus:border-ink-soft"
         />
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
@@ -70,7 +82,7 @@ export function TypesExplorer() {
               htmlFor="core-filter"
               className="mb-1 block text-xs font-semibold text-mist"
             >
-              四字母核心類型
+              {t.types.coreFilterLabel}
             </label>
             <select
               id="core-filter"
@@ -78,10 +90,10 @@ export function TypesExplorer() {
               onChange={(e) => setCoreFilter(e.target.value)}
               className="min-h-11 w-full rounded-lg border-2 border-ice-deep bg-white px-3 text-sm text-ink"
             >
-              <option value="all">全部核心型</option>
+              <option value="all">{t.types.allCores}</option>
               {CORE_ORDER.map((code) => (
                 <option key={code} value={code}>
-                  {code}・{CORE_PROFILES[code].name}
+                  {code}・{t.cores[code].name}
                 </option>
               ))}
             </select>
@@ -91,7 +103,7 @@ export function TypesExplorer() {
               htmlFor="ao-filter"
               className="mb-1 block text-xs font-semibold text-mist"
             >
-              決策推進（A/O）
+              {t.types.aoLabel}
             </label>
             <select
               id="ao-filter"
@@ -99,9 +111,9 @@ export function TypesExplorer() {
               onChange={(e) => setAoFilter(e.target.value)}
               className="min-h-11 w-full rounded-lg border-2 border-ice-deep bg-white px-3 text-sm text-ink"
             >
-              <option value="all">全部</option>
-              <option value="A">A・行動推進</option>
-              <option value="O">O・觀察沉思</option>
+              <option value="all">{t.types.filterAll}</option>
+              <option value="A">{t.types.aoA}</option>
+              <option value="O">{t.types.aoO}</option>
             </select>
           </div>
           <div>
@@ -109,7 +121,7 @@ export function TypesExplorer() {
               htmlFor="hc-filter"
               className="mb-1 block text-xs font-semibold text-mist"
             >
-              表達溫度（H/C）
+              {t.types.hcLabel}
             </label>
             <select
               id="hc-filter"
@@ -117,16 +129,16 @@ export function TypesExplorer() {
               onChange={(e) => setHcFilter(e.target.value)}
               className="min-h-11 w-full rounded-lg border-2 border-ice-deep bg-white px-3 text-sm text-ink"
             >
-              <option value="all">全部</option>
-              <option value="H">H・外顯溫度</option>
-              <option value="C">C・沉穩內斂</option>
+              <option value="all">{t.types.filterAll}</option>
+              <option value="H">{t.types.hcH}</option>
+              <option value="C">{t.types.hcC}</option>
             </select>
           </div>
         </div>
       </div>
 
       <p className="mt-4 text-sm text-mist" aria-live="polite">
-        顯示 {filtered.length} / 64 型
+        {fmt(t.types.showing, { shown: filtered.length })}
       </p>
 
       {/* 卡片：手機 1–2 欄、桌面多欄 */}
@@ -134,11 +146,14 @@ export function TypesExplorer() {
         {filtered.map((p) => (
           <li key={p.code}>
             <Link
-              href={`/types/${p.code}`}
+              href={localeHref(locale, `/types/${p.code}`)}
               className="flex h-full gap-4 rounded-card border border-ice-deep/60 bg-white p-4 transition hover:border-ink-soft hover:shadow-md"
             >
               <div className="w-20 shrink-0">
-                <TypeEmblem code={p.code} />
+                <TypeEmblem
+                  code={p.code}
+                  ariaLabel={fmt(t.typeDetail.emblemAria, { code: p.code })}
+                />
               </div>
               <div className="min-w-0">
                 <p className="font-mono text-sm font-bold text-ink-soft">
@@ -155,9 +170,7 @@ export function TypesExplorer() {
       </ul>
 
       {filtered.length === 0 && (
-        <p className="mt-8 text-center text-mist">
-          沒有符合的類型，試試調整搜尋或篩選條件。
-        </p>
+        <p className="mt-8 text-center text-mist">{t.types.empty}</p>
       )}
     </div>
   );

@@ -5,24 +5,27 @@ import { useRouter } from "next/navigation";
 import { getQuestionById, QUESTIONS } from "@/lib/questions";
 import type { TestSession } from "@/lib/types";
 import { createSession, loadSession, saveSession } from "@/lib/storage";
-
-const LIKERT_OPTIONS = [
-  { value: 1, label: "非常不同意" },
-  { value: 2, label: "不同意" },
-  { value: 3, label: "不確定／視情況而定" },
-  { value: 4, label: "同意" },
-  { value: 5, label: "非常同意" },
-] as const;
+import { getBundle } from "@/lib/i18n";
+import {
+  fmt,
+  localeHref,
+  DEFAULT_LOCALE,
+  type Locale,
+} from "@/lib/i18n/locales";
 
 /** 選擇後自動前進前的短暫回饋時間（毫秒） */
 const ADVANCE_DELAY = 350;
 
-export function QuestionFlow() {
+export function QuestionFlow({
+  locale = DEFAULT_LOCALE,
+}: {
+  locale?: Locale;
+}) {
   const router = useRouter();
+  const t = getBundle(locale);
   const [session, setSession] = useState<TestSession | null>(null);
   const [pendingValue, setPendingValue] = useState<number | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const liveRef = useRef<HTMLParagraphElement>(null);
 
   // 載入或建立工作階段（seed 固定洗牌：重新整理後題序不變）
   useEffect(() => {
@@ -45,7 +48,8 @@ export function QuestionFlow() {
   const question = questionId ? getQuestionById(questionId) : undefined;
   const answeredCount = session ? Object.keys(session.answers).length : 0;
   const selected =
-    pendingValue ?? (session && questionId ? session.answers[questionId] : undefined);
+    pendingValue ??
+    (session && questionId ? session.answers[questionId] : undefined);
 
   const persist = useCallback((next: TestSession) => {
     next.updatedAt = new Date().toISOString();
@@ -62,13 +66,13 @@ export function QuestionFlow() {
         if (Object.keys(session.answers).length === total) {
           const done = { ...session, completedAt: new Date().toISOString() };
           persist(done);
-          router.push("/test/calculating");
+          router.push(localeHref(locale, "/test/calculating"));
         }
         return;
       }
       persist({ ...session, currentIndex: nextIndex });
     },
-    [session, total, persist, router]
+    [session, total, persist, router, locale]
   );
 
   const answer = useCallback(
@@ -81,8 +85,9 @@ export function QuestionFlow() {
         ...session,
         answers: { ...session.answers, [questionId]: value },
       };
+      // 答案立即寫入（中途離開也不遺失）；只有「前進」延遲以保留回饋
+      persist(next);
 
-      // 短暫回饋後自動前進（可返回修改）
       advanceTimer.current = setTimeout(() => {
         setPendingValue(null);
         const isLast = index === total - 1;
@@ -90,17 +95,14 @@ export function QuestionFlow() {
           if (Object.keys(next.answers).length === total) {
             const done = { ...next, completedAt: new Date().toISOString() };
             persist(done);
-            router.push("/test/calculating");
-          } else {
-            // 有跳題未答：留在原地提示
-            persist(next);
+            router.push(localeHref(locale, "/test/calculating"));
           }
         } else {
           persist({ ...next, currentIndex: index + 1 });
         }
       }, ADVANCE_DELAY);
     },
-    [session, questionId, index, total, persist, router]
+    [session, questionId, index, total, persist, router, locale]
   );
 
   // 鍵盤操作：1–5 作答、← 上一題、→ 下一題
@@ -122,16 +124,15 @@ export function QuestionFlow() {
   if (!session || !question) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center text-mist">
-        <p>載入測驗中…</p>
+        <p>{t.quiz.loading}</p>
       </div>
     );
   }
 
   const percent = Math.round((answeredCount / total) * 100);
   const missingBefore =
-    index === total - 1 && answeredCount < total
-      ? total - answeredCount
-      : 0;
+    index === total - 1 && answeredCount < total ? total - answeredCount : 0;
+  const questionText = t.questions[question.id] ?? question.text;
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-2xl flex-col px-4 py-8">
@@ -139,20 +140,18 @@ export function QuestionFlow() {
       <div>
         <div className="flex items-baseline justify-between text-sm text-mist">
           <p>
-            第{" "}
-            <span className="font-bold text-ink">
-              {index + 1}
-            </span>{" "}
-            / {total} 題
+            {t.quiz.progressCurrent}{" "}
+            <span className="font-bold text-ink">{index + 1}</span>{" "}
+            {fmt(t.quiz.progressOf, { total })}
           </p>
-          <p aria-live="polite">已完成 {percent}%</p>
+          <p aria-live="polite">{fmt(t.quiz.progressPercent, { percent })}</p>
         </div>
         <div
           role="progressbar"
           aria-valuenow={percent}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="測驗進度"
+          aria-label={t.quiz.progressAria}
           className="mt-2 h-2 overflow-hidden rounded-full bg-ice"
         >
           <div
@@ -165,21 +164,20 @@ export function QuestionFlow() {
       {/* 題目 */}
       <div key={question.id} className="animate-rise mt-10 flex-1">
         <h1 className="min-h-20 text-xl font-bold leading-relaxed text-ink-deep sm:text-2xl">
-          {question.text}
+          {questionText}
         </h1>
 
         <fieldset className="mt-8">
-          <legend className="sr-only">
-            請選擇你的同意程度（可按鍵盤 1 到 5）
-          </legend>
+          <legend className="sr-only">{t.quiz.legend}</legend>
           <div className="space-y-2.5">
-            {LIKERT_OPTIONS.map((option) => {
-              const active = selected === option.value;
+            {t.quiz.likert.map((label, i) => {
+              const value = i + 1;
+              const active = selected === value;
               return (
                 <button
-                  key={option.value}
+                  key={value}
                   type="button"
-                  onClick={() => answer(option.value)}
+                  onClick={() => answer(value)}
                   aria-pressed={active}
                   className={`flex min-h-12 w-full items-center gap-3 rounded-card border-2 px-4 py-3 text-left transition ${
                     active
@@ -195,9 +193,9 @@ export function QuestionFlow() {
                         : "border-ice-deep text-mist"
                     }`}
                   >
-                    {option.value}
+                    {value}
                   </span>
-                  {option.label}
+                  {label}
                 </button>
               );
             })}
@@ -206,12 +204,10 @@ export function QuestionFlow() {
 
         {missingBefore > 0 && (
           <p
-            ref={liveRef}
             role="alert"
             className="mt-4 rounded-card bg-amber-soft/50 p-3 text-sm font-semibold text-ink"
           >
-            還有 {missingBefore}{" "}
-            題尚未作答，請用「上一題」回頭補答後才能送出。
+            {fmt(t.quiz.missingAlert, { missing: missingBefore })}
           </p>
         )}
       </div>
@@ -224,10 +220,10 @@ export function QuestionFlow() {
           disabled={index === 0}
           className="min-h-12 rounded-full border-2 border-ice-deep bg-white px-6 py-2.5 font-semibold text-ink transition hover:border-ink-soft disabled:cursor-not-allowed disabled:opacity-40"
         >
-          ← 上一題
+          {t.quiz.prev}
         </button>
         <p className="hidden text-xs text-mist sm:block">
-          鍵盤：1–5 作答，← → 前後移動
+          {t.quiz.keyboardHint}
         </p>
         <button
           type="button"
@@ -235,7 +231,7 @@ export function QuestionFlow() {
           disabled={selected === undefined}
           className="min-h-12 rounded-full border-2 border-ice-deep bg-white px-6 py-2.5 font-semibold text-ink transition hover:border-ink-soft disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {index === total - 1 ? "完成 →" : "下一題 →"}
+          {index === total - 1 ? t.quiz.finish : t.quiz.next}
         </button>
       </div>
     </div>

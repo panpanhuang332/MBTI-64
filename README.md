@@ -16,6 +16,7 @@
 - **分享**：經驗證的 URL query 參數（防竄改、防崩潰）＋ Canvas 分享圖卡（1080×1350、1080×1080）
 - **64 型圖鑑**：搜尋（代碼／中文名）、篩選（核心型／A-O／H-C），無稀有度階級
 - **SEO**：title template、OG／Twitter meta、robots.txt、sitemap.xml、manifest、favicon
+- **多語系**：繁中（根路徑）＋ 簡中（`/zh-CN`，OpenCC 詞彙級自動轉換）＋ 英文（`/en`，人工翻譯），含 hreflang、語言切換器；三語共 219 個靜態頁
 - **類型對照**：`/compare` 把你和朋友的代碼放在一起，逐維度對照偏好差異並附「聊聊看」對話題；不打契合度分數
 - **每型專屬 OG 圖**：build 時以 `@resvg/resvg-js` 將原創 SVG 轉成 1200×630 PNG（64 型＋預設圖，共 65 張），社群分享每型都有自己的預覽圖
 
@@ -136,7 +137,7 @@ node scripts/serve-out.mjs 4173
 - `weight` 介於 0.5–2
 - 每維度至少 3 題反向題、2 組配對題（`pairId` 恰好兩題一組、同維度）、3 題情境題（work/stress/decision）
 
-改完執行 `npm run test` 確認驗證與計分測試通過。
+改完執行 `npm run test` 確認驗證與計分測試通過。**多語系注意**：英文題目文案在 `src/lib/i18n/en/questions.ts`（缺翻譯會讓 validate-data 失敗）；簡中執行 `npm run generate-zh-cn` 重新生成。
 
 ## 如何修改 64 型內容
 
@@ -145,6 +146,13 @@ node scripts/serve-out.mjs 4173
 - 64 型 = 核心 × 子型，自動組合（`src/lib/profiles/index.ts`），不需要手寫 64 篇
 
 欄位完整性由 `validateProfiles()` 檢查（缺欄位、名稱重複都會讓 build 失敗）。文案語氣規範見 `CONTENT_GUIDE.md`。
+
+## 多語系
+
+- 繁中 canonical 文案：`src/lib/i18n/canonical.ts`（UI 與頁面）＋既有資料檔（題庫/類型）
+- 英文：`src/lib/i18n/en/`（結構必須與 canonical 一致，缺漏會讓 build 失敗）
+- 簡中：`npm run generate-zh-cn` 由 OpenCC（twp→cn 詞彙級）自動生成 `zh-cn.generated.json`，特例修正表在 `scripts/generate-zh-cn.ts` 的 `FIXUPS`
+- 路由：zh-TW 在根路徑、其他語系在 `/zh-CN`、`/en` 前綴（`src/app/[locale]/`）
 
 ## 如何變更品牌
 

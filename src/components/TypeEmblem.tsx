@@ -2,7 +2,13 @@
  * 類型抽象圖形：依六字母代碼以固定規則產生的原創幾何徽章
  * （山形、星點、光暈隨字母變化，同代碼永遠相同）。
  */
-export function TypeEmblem({ code }: { code: string }) {
+export function TypeEmblem({
+  code,
+  ariaLabel,
+}: {
+  code: string;
+  ariaLabel?: string;
+}) {
   const letters = code.replace("-", "");
   const isE = letters[0] === "E";
   const isS = letters[1] === "S";
@@ -26,7 +32,11 @@ export function TypeEmblem({ code }: { code: string }) {
   }));
 
   return (
-    <svg viewBox="0 0 140 120" role="img" aria-label={`${code} 類型徽章`}>
+    <svg
+      viewBox="0 0 140 120"
+      role="img"
+      aria-label={ariaLabel ?? `${code} 類型徽章`}
+    >
       <defs>
         <clipPath id={`emblem-clip-${code}`}>
           <rect x="4" y="4" width="132" height="112" rx="16" />

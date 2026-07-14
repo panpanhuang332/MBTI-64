@@ -2,7 +2,7 @@
 
 import type { DimensionScores } from "./types";
 import { DIMENSION_META, DIMENSION_ORDER } from "./dimensions";
-import { SITE_NAME, SITE_NAME_EN, SITE_URL } from "./site";
+import { SITE_URL } from "./site";
 
 /**
  * 結果分享圖卡：以 Canvas 繪製本站原創圖形語言（冰藍山景＋星點），
@@ -35,6 +35,10 @@ export interface ShareCardData {
   name: string;
   motto: string;
   scores: DimensionScores;
+  /** 圖卡上的品牌文字（依語系） */
+  brand: string;
+  /** 「僅供自我探索」免責小字（依語系） */
+  disclaimer: string;
 }
 
 export function drawShareCard(
@@ -106,7 +110,7 @@ export function drawShareCard(
   // 品牌
   ctx.fillStyle = COLORS.mist;
   ctx.font = `600 34px ${FONT}`;
-  ctx.fillText(`${SITE_NAME}  ${SITE_NAME_EN}`, width / 2, 130);
+  ctx.fillText(data.brand, width / 2, 130);
 
   const compact = size === "square";
   const codeY = compact ? 260 : 320;
@@ -175,7 +179,7 @@ export function drawShareCard(
   ctx.fillText(urlText, width / 2, height - 88);
   ctx.fillStyle = COLORS.mist;
   ctx.font = `400 26px ${FONT}`;
-  ctx.fillText("僅供自我探索・非官方 MBTI・非心理診斷", width / 2, height - 44);
+  ctx.fillText(data.disclaimer, width / 2, height - 44);
 }
 
 function roundRect(

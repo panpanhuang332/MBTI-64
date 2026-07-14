@@ -5,11 +5,28 @@
 import { QUESTIONS } from "../src/lib/questions";
 import { validateQuestionBank } from "../src/lib/validate-questions";
 import { validateProfiles } from "../src/lib/profiles";
+import { validateBundles } from "../src/lib/i18n";
+import { QUESTIONS_EN } from "../src/lib/i18n/en/questions";
 
 const questionIssues = validateQuestionBank(QUESTIONS);
 const profileErrors = validateProfiles();
 
 let failed = false;
+
+// 語系 bundle 驗證（zh-CN 生成檔與 en 翻譯結構須與 canonical 同步）
+const bundleErrors = validateBundles();
+for (const q of QUESTIONS) {
+  if (!QUESTIONS_EN[q.id]) {
+    bundleErrors.push(`[en] 題目 ${q.id} 缺少英文翻譯`);
+  }
+}
+if (bundleErrors.length > 0) {
+  console.error("❌ 語系資料驗證失敗：");
+  for (const message of bundleErrors) console.error(`  ${message}`);
+  failed = true;
+} else {
+  console.log("✅ 語系資料驗證通過（zh-TW / zh-CN / en）");
+}
 
 if (questionIssues.length > 0) {
   console.error("❌ 題庫驗證失敗：");
