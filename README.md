@@ -16,6 +16,7 @@
 - **分享**：經驗證的 URL query 參數（防竄改、防崩潰）＋ Canvas 分享圖卡（1080×1350、1080×1080）
 - **64 型圖鑑**：搜尋（代碼／中文名）、篩選（核心型／A-O／H-C），無稀有度階級
 - **SEO**：title template、OG／Twitter meta、robots.txt、sitemap.xml、manifest、favicon
+- **類型對照**：`/compare` 把你和朋友的代碼放在一起，逐維度對照偏好差異並附「聊聊看」對話題；不打契合度分數
 - **每型專屬 OG 圖**：build 時以 `@resvg/resvg-js` 將原創 SVG 轉成 1200×630 PNG（64 型＋預設圖，共 65 張），社群分享每型都有自己的預覽圖
 
 ## 六個維度

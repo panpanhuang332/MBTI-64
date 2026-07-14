@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { extractCode } from "@/lib/compare";
 import { DimensionBars } from "@/components/DimensionBars";
 import { TypeEmblem } from "@/components/TypeEmblem";
 import { getFullProfile, type FullProfile } from "@/lib/profiles";
@@ -32,6 +33,8 @@ export function ResultView() {
     { status: "loading" } | { status: "invalid" } | ({ status: "ok" } & ViewData)
   >({ status: "loading" });
   const [copied, setCopied] = useState(false);
+  const [friendInput, setFriendInput] = useState("");
+  const [friendError, setFriendError] = useState<string | null>(null);
 
   useEffect(() => {
     const hasParams = searchParams.size > 0;
@@ -257,6 +260,50 @@ export function ResultView() {
         <DetailBlock title="常見誤解">
           <p>{core.misconception}</p>
         </DetailBlock>
+      </section>
+
+      {/* 與朋友類型對照 */}
+      <section className="mt-8 rounded-card border border-ice-deep/60 bg-cloud p-6">
+        <h2 className="font-bold text-ink-deep">與朋友類型對照</h2>
+        <p className="mt-2 text-sm leading-relaxed text-mist">
+          貼上朋友的六字母代碼或結果連結，逐一對照你們六個維度的偏好——開啟對話，不是評分。
+        </p>
+        <form
+          className="mt-4 flex flex-col gap-3 sm:flex-row"
+          onSubmit={(e: FormEvent) => {
+            e.preventDefault();
+            const friend = extractCode(friendInput);
+            if (!friend) {
+              setFriendError("代碼格式不正確，例：ENFP-AH");
+              return;
+            }
+            setFriendError(null);
+            router.push(`/compare?a=${profile.code}&b=${friend}`);
+          }}
+        >
+          <label htmlFor="friend-code" className="sr-only">
+            朋友的類型代碼或結果連結
+          </label>
+          <input
+            id="friend-code"
+            type="text"
+            value={friendInput}
+            onChange={(e) => setFriendInput(e.target.value)}
+            placeholder="如 ENFP-AH，或貼上對方的結果連結"
+            className="min-h-12 flex-1 rounded-full border-2 border-ice-deep bg-white px-5 text-ink placeholder:text-mist focus:border-ink-soft"
+          />
+          <button
+            type="submit"
+            className="min-h-12 rounded-full bg-ink px-6 py-3 font-bold text-white transition hover:bg-ink-deep"
+          >
+            開始對照
+          </button>
+        </form>
+        {friendError && (
+          <p role="alert" className="mt-2 text-sm font-semibold text-amber-deep">
+            {friendError}
+          </p>
+        )}
       </section>
 
       {/* 反思問題 */}
