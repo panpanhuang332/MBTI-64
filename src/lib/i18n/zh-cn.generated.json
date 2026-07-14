@@ -457,7 +457,8 @@
   ]
  },
  "shareCard": {
-  "disclaimer": "仅供自我探索・非官方 MBTI・非心理诊断"
+  "disclaimer": "仅供自我探索・非官方 MBTI・非心理诊断",
+  "ogMotto": "了解你的决策与人际表达方式"
  },
  "dimensions": {
   "EI": {

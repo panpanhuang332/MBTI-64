@@ -468,6 +468,8 @@ export const canonicalBundle = {
   },
   shareCard: {
     disclaimer: "僅供自我探索・非官方 MBTI・非心理診斷",
+    /** 預設 OG 圖（首頁等）上的一句話 */
+    ogMotto: "了解你的決策與人際表達方式",
   },
   dimensions: DIMENSION_META,
   questions: questionsText,

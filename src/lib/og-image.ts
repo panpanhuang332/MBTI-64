@@ -1,14 +1,22 @@
-import { DIMENSION_ORDER } from "./dimensions";
-import { SITE_NAME, SITE_NAME_EN, SITE_TAGLINE, SITE_URL } from "./site";
+import { getBundle } from "./i18n";
+import type { Locale } from "./i18n/locales";
+import { SITE_URL } from "./site";
 
 /**
- * 每型專屬 OG 圖（1200×630）的 SVG 產生器。
+ * 每型專屬 OG 圖（1200×630）的 SVG 產生器，支援三語系。
  * 純函式：同樣輸入永遠產生同樣的 SVG；由 scripts/generate-og.ts 在 build 時轉為 PNG。
  * 視覺沿用網站的原創圖形語言（冰藍山景、星點、琥珀傾向點）。
  */
 
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
+
+/** 各語系算圖使用的字型家族（對應 assets/fonts 的子集檔） */
+export const OG_FONT_FAMILY: Record<Locale, string> = {
+  "zh-TW": "Noto Sans TC",
+  "zh-CN": "Noto Sans SC",
+  en: "Noto Sans TC", // 拉丁字元由 TC 子集涵蓋
+};
 
 export interface OgData {
   code: string;
@@ -43,7 +51,7 @@ function mountains(): string {
 }
 
 /** 六字母沿線排列的裝飾（右側） */
-function letterTrail(code: string): string {
+function letterTrail(code: string, font: string): string {
   const letters = code.replace("-", "").split("");
   const startX = 830;
   const y = 210;
@@ -52,17 +60,36 @@ function letterTrail(code: string): string {
       const x = startX + i * 58;
       return `
    <circle cx="${x}" cy="${y}" r="24" fill="${i >= 4 ? "#f2a93b" : "#eaf4fa"}" stroke="#0e4a5a" stroke-width="2.5"/>
-   <text x="${x}" y="${y + 10}" text-anchor="middle" font-family="Noto Sans TC" font-size="28" font-weight="700" fill="#0e4a5a">${letter}</text>`;
+   <text x="${x}" y="${y + 10}" text-anchor="middle" font-family="${font}" font-size="28" font-weight="700" fill="#0e4a5a">${letter}</text>`;
     })
     .join("");
 }
 
-export function ogSvg(data: OgData): string {
+/** 該語系 OG 圖上的固定文字（品牌、免責、網址） */
+export function ogLabels(locale: Locale): {
+  brand: string;
+  disclaimer: string;
+  url: string;
+} {
+  const t = getBundle(locale);
+  return {
+    brand:
+      t.site.name === t.site.nameEn
+        ? t.site.name
+        : `${t.site.name}  ${t.site.nameEn}`,
+    disclaimer: t.shareCard.disclaimer,
+    url: SITE_URL.replace(/^https?:\/\//, ""),
+  };
+}
+
+export function ogSvg(data: OgData, locale: Locale = "zh-TW"): string {
+  const font = OG_FONT_FAMILY[locale];
+  const labels = ogLabels(locale);
   const code = escapeXml(data.code);
   const name = escapeXml(data.name);
   const tagline = escapeXml(data.tagline);
   const motto = escapeXml(data.motto);
-  const url = escapeXml(SITE_URL.replace(/^https?:\/\//, ""));
+  const quotedMotto = locale === "en" ? `“${motto}”` : `「${motto}」`;
 
   return `<svg width="${OG_WIDTH}" height="${OG_HEIGHT}" viewBox="0 0 ${OG_WIDTH} ${OG_HEIGHT}" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -74,41 +101,46 @@ export function ogSvg(data: OgData): string {
   <rect width="${OG_WIDTH}" height="${OG_HEIGHT}" fill="url(#bg)"/>
   ${STARS.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#b3d7e8"/>`).join("\n  ")}
   ${mountains()}
-  <text x="80" y="110" font-family="Noto Sans TC" font-size="34" font-weight="600" fill="#5b7280">${escapeXml(SITE_NAME)}  ${escapeXml(SITE_NAME_EN)}</text>
-  <text x="80" y="248" font-family="Noto Sans TC" font-size="120" font-weight="800" fill="#093542" letter-spacing="2">${code}</text>
-  <text x="80" y="340" font-family="Noto Sans TC" font-size="60" font-weight="700" fill="#0e4a5a">${name}</text>
-  <text x="80" y="410" font-family="Noto Sans TC" font-size="36" fill="#2d6b7d">${tagline}</text>
-  <text x="80" y="470" font-family="Noto Sans TC" font-size="30" fill="#5b7280">「${motto}」</text>
-  ${letterTrail(data.code)}
-  <text x="80" y="${OG_HEIGHT - 36}" font-family="Noto Sans TC" font-size="26" font-weight="600" fill="#0e4a5a">${url}</text>
-  <text x="${OG_WIDTH - 80}" y="${OG_HEIGHT - 36}" text-anchor="end" font-family="Noto Sans TC" font-size="22" fill="#5b7280">僅供自我探索・非官方 MBTI・非心理診斷</text>
+  <text x="80" y="110" font-family="${font}" font-size="34" font-weight="600" fill="#5b7280">${escapeXml(labels.brand)}</text>
+  <text x="80" y="248" font-family="${font}" font-size="120" font-weight="800" fill="#093542" letter-spacing="2">${code}</text>
+  <text x="80" y="340" font-family="${font}" font-size="${locale === "en" ? 48 : 60}" font-weight="700" fill="#0e4a5a">${name}</text>
+  <text x="80" y="410" font-family="${font}" font-size="${locale === "en" ? 32 : 36}" fill="#2d6b7d">${tagline}</text>
+  <text x="80" y="470" font-family="${font}" font-size="${locale === "en" ? 28 : 30}" fill="#5b7280">${quotedMotto}</text>
+  ${letterTrail(data.code, font)}
+  <text x="80" y="${OG_HEIGHT - 36}" font-family="${font}" font-size="26" font-weight="600" fill="#0e4a5a">${escapeXml(labels.url)}</text>
+  <text x="${OG_WIDTH - 80}" y="${OG_HEIGHT - 36}" text-anchor="end" font-family="${font}" font-size="22" fill="#5b7280">${escapeXml(labels.disclaimer)}</text>
 </svg>`;
 }
 
 /** 預設 OG 圖（首頁與一般頁面） */
-export function defaultOgSvg(): string {
-  return ogSvg({
-    code: "64",
-    name: SITE_NAME,
-    tagline: SITE_TAGLINE,
-    motto: "了解你的決策與人際表達方式",
-  });
+export function defaultOgSvg(locale: Locale = "zh-TW"): string {
+  const t = getBundle(locale);
+  return ogSvg(
+    {
+      code: "64",
+      name: t.site.name,
+      tagline: t.site.tagline,
+      motto: t.shareCard.ogMotto,
+    },
+    locale
+  );
 }
 
-/** 收集 OG 圖會用到的所有字元（供字型子集化與涵蓋檢查） */
-export function collectOgChars(datas: OgData[]): string {
+/** 收集該語系 OG 圖會用到的所有字元（供字型子集化與涵蓋檢查） */
+export function collectOgChars(datas: OgData[], locale: Locale): string {
+  const t = getBundle(locale);
+  const labels = ogLabels(locale);
   const set = new Set<string>();
   const add = (s: string) => {
     for (const ch of s) set.add(ch);
   };
-  add(SITE_NAME);
-  add(SITE_NAME_EN);
-  add(SITE_TAGLINE);
-  add(SITE_URL.replace(/^https?:\/\//, ""));
-  add("僅供自我探索・非官方 MBTI・非心理診斷");
-  add("「」64");
-  add("了解你的決策與人際表達方式");
-  add("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.·・");
+  add(labels.brand);
+  add(labels.disclaimer);
+  add(labels.url);
+  add(t.site.tagline);
+  add(t.shareCard.ogMotto);
+  add("「」“”64");
+  add("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.·・|｜ ");
   for (const d of datas) {
     add(d.code);
     add(d.name);
@@ -117,5 +149,3 @@ export function collectOgChars(datas: OgData[]): string {
   }
   return [...set].sort().join("");
 }
-
-export { DIMENSION_ORDER };

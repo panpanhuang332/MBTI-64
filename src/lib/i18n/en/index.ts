@@ -483,6 +483,7 @@ export const enBundle: Bundle = {
   },
   shareCard: {
     disclaimer: "For self-exploration only · Not official MBTI · Not a diagnosis",
+    ogMotto: "Understand how you decide and how you connect",
   },
   dimensions: DIMENSION_META_EN,
   questions: QUESTIONS_EN,

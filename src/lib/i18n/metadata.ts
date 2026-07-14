@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getBundle } from "./index";
+import { ogDefaultPath } from "../og-paths";
 import {
   languageAlternates,
   localeHref,
@@ -16,9 +17,9 @@ export function pageMetadata(
 ): Metadata {
   const t = getBundle(locale);
   const canonical = localeHref(locale, path);
-  const images = extra?.ogImage
-    ? [{ url: extra.ogImage, width: 1200, height: 630 }]
-    : undefined;
+  // 未指定專屬 OG 圖時使用該語系的預設圖
+  const ogImage = extra?.ogImage ?? ogDefaultPath(locale);
+  const images = [{ url: ogImage, width: 1200, height: 630 }];
   // 用 absolute title 避免根 layout 的 zh-TW title template 污染其他語系
   const separator = locale === "en" ? " | " : "｜";
   const fullTitle =
@@ -34,9 +35,9 @@ export function pageMetadata(
       title: fullTitle,
       description: meta.description,
       locale: OG_LOCALE[locale],
-      ...(images ? { images } : {}),
+      images,
     },
+    twitter: { card: "summary_large_image", images: [ogImage] },
     ...(extra?.noindex ? { robots: { index: false } } : {}),
-    ...(images ? { twitter: { card: "summary_large_image", images: [extra!.ogImage!] } } : {}),
   };
 }

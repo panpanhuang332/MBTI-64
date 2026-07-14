@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { TypeDetailView } from "@/views/TypeDetailView";
 import { getBundle, getLocalizedProfile } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/i18n/metadata";
+import { ogImagePath } from "@/lib/og-paths";
 import type { Locale } from "@/lib/i18n/locales";
 import { allCodes } from "@/lib/scoring";
 
@@ -29,7 +30,7 @@ export async function generateMetadata({
       title: `${profile.code} ${profile.name}`,
       description: `${profile.name} (${profile.code}): ${profile.core.summary.slice(0, 100)}…`,
     },
-    { ogImage: `/og/${profile.code}.png` }
+    { ogImage: ogImagePath(l, profile.code) }
   );
 }
 
