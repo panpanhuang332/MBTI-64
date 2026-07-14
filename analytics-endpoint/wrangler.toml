@@ -1,0 +1,18 @@
+# 匿名統計端點 — Cloudflare Workers 設定範例
+# 部署步驟見 analytics-endpoint/README.md
+name = "pa64-analytics"
+main = "worker.ts"
+compatibility_date = "2025-01-01"
+
+# 1. 建立 KV namespace：npx wrangler kv namespace create EVENTS
+# 2. 把回傳的 id 填到下面
+[[kv_namespaces]]
+binding = "EVENTS"
+id = "＜填入你的 KV namespace id＞"
+
+[vars]
+# 建議設定成你的網站網域，限制 CORS 來源
+ALLOWED_ORIGIN = "https://your-domain.example.com"
+
+# STATS_TOKEN 請用 secret 設定，不要寫在這裡：
+#   npx wrangler secret put STATS_TOKEN

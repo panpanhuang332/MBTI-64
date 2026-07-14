@@ -1,0 +1,47 @@
+# 自動部署到 GitHub Pages（gh-pages 分支）
+# 觸發：push 到 main，或手動 workflow_dispatch
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint and test
+        run: |
+          npm run lint
+          npm run test
+
+      - name: Build (GitHub Pages base path)
+        env:
+          NEXT_PUBLIC_BASE_PATH: /MBTI-64
+          NEXT_PUBLIC_SITE_URL: https://panpanhuang332.github.io/MBTI-64
+        run: npm run build
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          force_orphan: true

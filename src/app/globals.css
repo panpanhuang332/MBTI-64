@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+/*
+ * 人格座標 64 — Design Tokens
+ * 深藍綠（主標）、冰藍（山景／背景）、暖黃琥珀（CTA）、淺灰（次要資訊）、白（背景）
+ */
+@theme {
+  --color-ink: #0e4a5a; /* 深藍綠：主標與核心文字 */
+  --color-ink-deep: #093542;
+  --color-ink-soft: #2d6b7d;
+  --color-ice: #eaf4fa; /* 冰藍：背景 */
+  --color-ice-deep: #cfe6f2; /* 冰藍：山景 */
+  --color-ice-mist: #b3d7e8;
+  --color-amber: #f2a93b; /* 暖黃琥珀：主要 CTA */
+  --color-amber-deep: #d98f1f;
+  --color-amber-soft: #fbe3b5;
+  --color-mist: #5b7280; /* 淺灰藍：次要資訊 */
+  --color-cloud: #f4f8fb;
+
+  --font-sans: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei",
+    "Heiti TC", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --radius-card: 1.25rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: white;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 鍵盤操作 focus ring：清楚可見的琥珀色外框 */
+:focus-visible {
+  outline: 3px solid var(--color-amber-deep);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-amber-soft);
+  color: var(--color-ink-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 列印／存成 PDF：只保留報告內容本身 */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: white;
+  }
+  main {
+    max-width: none;
+  }
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+@keyframes pa64-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: pa64-rise 0.5s ease-out both;
+}
+
+@keyframes pa64-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-softpulse {
+  animation: pa64-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pa64-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-bargrow {
+  transform-origin: left;
+  animation: pa64-grow 0.8s ease-out both;
+}

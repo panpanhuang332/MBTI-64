@@ -1,0 +1,45 @@
+{
+  "name": "personality-atlas-64",
+  "version": "1.0.0",
+  "private": true,
+  "description": "人格座標 64（Personality Atlas 64）— 六維度 64 型人格探索測驗",
+  "scripts": {
+    "dev": "next dev",
+    "validate-data": "tsx scripts/validate-data.ts",
+    "generate-og": "tsx scripts/generate-og.ts",
+    "prebuild": "npm run validate-data && npm run generate-og",
+    "build": "next build",
+    "start": "npx serve@latest out",
+    "lint": "eslint .",
+    "test": "npm run validate-data && vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "generate-zh-cn": "tsx scripts/generate-zh-cn.ts"
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.5.0",
+    "eslint": "^9.30.0",
+    "eslint-config-next": "^15.5.0",
+    "jsdom": "^26.1.0",
+    "opencc-js": "^1.4.1",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^4.1.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}
