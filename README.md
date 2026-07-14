@@ -18,6 +18,7 @@
 - **SEO**：title template、OG／Twitter meta、robots.txt、sitemap.xml、manifest、favicon
 - **多語系**：繁中（根路徑）＋ 簡中（`/zh-CN`，OpenCC 詞彙級自動轉換）＋ 英文（`/en`，人工翻譯），含 hreflang、語言切換器；三語共 219 個靜態頁
 - **類型對照**：`/compare` 把你和朋友的代碼放在一起，逐維度對照偏好差異並附「聊聊看」對話題；不打契合度分數
+- **PWA 離線快取**：手寫 service worker（`public/sw.js`）——導覽 network-first（新版即時生效）、靜態資產 cache-first、核心頁面預快取，離線仍可作答與瀏覽已載入的頁面；`manifest.webmanifest` 支援安裝到主畫面
 - **匿名統計（選配、預設關閉）**：設定 `NEXT_PUBLIC_ANALYTICS_ENDPOINT` 後才會以 sendBeacon 記錄極簡事件（test_started / test_completed / result_shared / compare_used ＋介面語言），無識別碼、無 cookie、無作答內容、無結果代碼，尊重 DNT；留空則完全停用
 - **每型專屬 OG 圖**：build 時以 `@resvg/resvg-js` 將原創 SVG 轉成 1200×630 PNG（64 型＋預設圖，共 65 張），社群分享每型都有自己的預覽圖
 
@@ -161,6 +162,11 @@ node scripts/serve-out.mjs 4173
 2. `src/app/globals.css`：`@theme` 色彩 tokens
 3. `src/app/icon.svg`：favicon
 4. `src/components/SiteHeader.tsx` / `HeroScene.tsx`：Logo 與首頁場景
+
+## PWA
+
+- Service worker 只在正式建置註冊（開發模式停用）；改版時調整 `public/sw.js` 的 `CACHE_VERSION` 即可讓舊快取在 activate 時被清除
+- 導覽請求採 network-first，部署新版後使用者下一次連線瀏覽即取得新內容
 
 ## 免責聲明
 
