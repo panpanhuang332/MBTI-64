@@ -444,7 +444,7 @@ export const enBundle: Bundle = {
       },
     ],
     footnote:
-      "This is a static site whose core features work without any backend. If a hosting platform (e.g. Vercel, Netlify) provides basic anonymous traffic statistics, those statistics contain none of your answer content.",
+      "This is a static site whose core features work without any backend. If a hosting platform (e.g. Vercel, Netlify) provides basic anonymous traffic statistics, those statistics contain none of your answer content. Additionally, the operator may optionally enable a minimal anonymous event counter (off by default): it records only event names like “test started” / “test completed” plus the interface language, to understand completion rates — no identifiers, no cookies, no answer content, no personality results, and the browser's Do Not Track setting is respected.",
   },
   terms: {
     title: "Terms of Use",

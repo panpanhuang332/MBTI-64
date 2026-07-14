@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TypeEmblem } from "@/components/TypeEmblem";
+import { track } from "@/lib/analytics";
 import { compareDimensions, extractCode, sameCount } from "@/lib/compare";
 import { getBundle, getLocalizedProfile } from "@/lib/i18n";
 import {
@@ -46,6 +47,11 @@ export function CompareView({
     const saved = loadResult();
     if (saved) setInputA(saved.code);
   }, [codeA, ready]);
+
+  // 匿名事件：只記「對照功能被使用」，不含任何代碼
+  useEffect(() => {
+    if (ready) track("compare_used", locale);
+  }, [ready, locale]);
 
   const submit = (e: FormEvent) => {
     e.preventDefault();

@@ -6,6 +6,7 @@ import { QUESTIONS } from "@/lib/questions";
 import { computeResult } from "@/lib/scoring";
 import { loadSession, saveResult, SCHEMA_VERSION } from "@/lib/storage";
 import { encodeResultParams } from "@/lib/result-url";
+import { track } from "@/lib/analytics";
 import { getBundle } from "@/lib/i18n";
 import {
   fmt,
@@ -55,6 +56,7 @@ export function CalculatingScreen({
       stability: result.stability,
       completedAt,
     });
+    track("test_completed", locale); // 匿名事件：不含結果代碼與任何作答內容
 
     const timers: ReturnType<typeof setTimeout>[] = [];
     for (let i = 0; i < stageCount; i++) {

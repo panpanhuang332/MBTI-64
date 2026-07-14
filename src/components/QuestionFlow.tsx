@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getQuestionById, QUESTIONS } from "@/lib/questions";
 import type { TestSession } from "@/lib/types";
 import { createSession, loadSession, saveSession } from "@/lib/storage";
+import { track } from "@/lib/analytics";
 import { getBundle } from "@/lib/i18n";
 import {
   fmt,
@@ -36,11 +37,12 @@ export function QuestionFlow({
       const fresh = createSession();
       saveSession(fresh);
       setSession(fresh);
+      track("test_started", locale); // 匿名事件（預設關閉，見 lib/analytics）
     }
     return () => {
       if (advanceTimer.current) clearTimeout(advanceTimer.current);
     };
-  }, []);
+  }, [locale]);
 
   const total = QUESTIONS.length;
   const index = session ? Math.min(session.currentIndex, total - 1) : 0;

@@ -18,6 +18,7 @@ import {
   type Locale,
 } from "@/lib/i18n/locales";
 import { decodeResultParams, encodeResultParams } from "@/lib/result-url";
+import { track } from "@/lib/analytics";
 import { downloadShareCard } from "@/lib/share-card";
 import { clearSession, loadResult } from "@/lib/storage";
 import type { DimensionScores, Stability } from "@/lib/types";
@@ -126,6 +127,7 @@ export function ResultView({
   const { core, subtype } = profile;
 
   const copyLink = async () => {
+    track("result_shared", locale);
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
@@ -133,6 +135,11 @@ export function ResultView({
     } catch {
       window.prompt(t.result.copyPrompt, window.location.href);
     }
+  };
+
+  const downloadCard = (size: "portrait" | "square") => {
+    track("result_shared", locale);
+    downloadShareCard(shareData, size);
   };
 
   const retake = () => {
@@ -370,14 +377,14 @@ export function ResultView({
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => downloadShareCard(shareData, "portrait")}
+            onClick={() => downloadCard("portrait")}
             className="min-h-12 rounded-full border-2 border-ink px-4 py-3 text-sm font-bold text-ink transition hover:bg-ice"
           >
             {t.result.downloadPortrait}
           </button>
           <button
             type="button"
-            onClick={() => downloadShareCard(shareData, "square")}
+            onClick={() => downloadCard("square")}
             className="min-h-12 rounded-full border-2 border-ink px-4 py-3 text-sm font-bold text-ink transition hover:bg-ice"
           >
             {t.result.downloadSquare}
